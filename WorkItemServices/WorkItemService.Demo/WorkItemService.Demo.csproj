@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TimeTrackingService\TimeTrackingService.csproj" />
     <ProjectReference Include="..\WorkItemServices\WorkItemServices.csproj" />
   </ItemGroup>
 

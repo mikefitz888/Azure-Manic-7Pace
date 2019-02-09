@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TimeTrackingService;
+using TimeTrackingService.Internal;
 using WorkItemServices;
 
 namespace WorkItemService.Demo
@@ -7,15 +10,37 @@ namespace WorkItemService.Demo
     {
         static void Main(string[] args)
         {
-            const string personalAccessToken = "";
+            const string personalAccessToken = @"";
 
+            const string timeTrackerToken = @"";
+
+            WorkItems(personalAccessToken).Wait();
+
+            TimeTracker(timeTrackerToken).Wait();
+        }
+
+        private static async Task WorkItems(string personalAccessToken)
+        {
             var client = new WorkItemClient(personalAccessToken);
 
-            var assignedWorkItemReferences = client.GetAssignedWorkItemReferences().Result.WorkItems;
+            var assignedWorkItemReferences = await client.GetAssignedWorkItemReferences();
 
-            var workItems = client.GetWorkItemsByReference(assignedWorkItemReferences).Result;
+            var workItems = await client.GetWorkItemsByReference(assignedWorkItemReferences.WorkItems);
+        }
 
-            Console.ReadKey();
+        private static async Task TimeTracker(string timeTrackerToken)
+        {
+            var client = new TimeTrackingClient(timeTrackerToken);
+
+            var me = await client.GetMe();
+
+            var items = await client.GetWorkLogs(DateTime.Now.AddDays(-7), DateTime.Now);
+
+            var createRequest = new CreateWorkLogRequest(DateTime.UtcNow, 500, null, "TimeTracker API Test", me.User.Id, ActivityType.Internal);
+
+            // var created = await client.CreateWorkLog(createRequest);
+
+            // await client.DeleteWorkLog(created.Id);
         }
     }
 }

@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkItemServices", "WorkItemServices\WorkItemServices.csproj", "{40A993F4-0A9C-4655-A8D1-F9BAC11C96D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkItemServices", "WorkItemServices\WorkItemServices.csproj", "{40A993F4-0A9C-4655-A8D1-F9BAC11C96D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkItemService.Demo", "WorkItemService.Demo\WorkItemService.Demo.csproj", "{E3EEB345-6DFF-4C66-981B-1208E682672F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkItemService.Demo", "WorkItemService.Demo\WorkItemService.Demo.csproj", "{E3EEB345-6DFF-4C66-981B-1208E682672F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTrackingService", "TimeTrackingService\TimeTrackingService.csproj", "{6882C61C-D602-4907-A50C-1D2A33DD91D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeTrackingService", "TimeTrackingService\TimeTrackingService.csproj", "{6882C61C-D602-4907-A50C-1D2A33DD91D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpExtensions", "HttpExtensions\HttpExtensions.csproj", "{58A55E40-5512-4753-A88F-A2482399AC8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{6882C61C-D602-4907-A50C-1D2A33DD91D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6882C61C-D602-4907-A50C-1D2A33DD91D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6882C61C-D602-4907-A50C-1D2A33DD91D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A55E40-5512-4753-A88F-A2482399AC8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A55E40-5512-4753-A88F-A2482399AC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A55E40-5512-4753-A88F-A2482399AC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A55E40-5512-4753-A88F-A2482399AC8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

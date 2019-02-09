@@ -1,28 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Finkit.ManicTime.Common.TagSources;
 using Finkit.ManicTime.Shared.Tags.Labels;
+using WorkItemServices;
 
 namespace TagPlugin.ImportTags
 {
     public class TagsImporter
     {
-        public static List<TagSourceItem> GetTags()
-        {
-            var tagSourceItems = new List<TagSourceItem>
-            {
-                new TagSourceItem
-                {
-                    Tags = new[] { "#29028", "Update Arrow Color", ClientPlugin.HiddenTagLabel },
-                    Notes = "Note"
-                },
-                new TagSourceItem
-                {
-                    Tags = new[] { "Demo Project 2", "Demo Activity 2", TagLabels.Billable, ClientPlugin.HiddenTagLabel },
-                    Notes = "Note 2"
-                }
-            };
+        private readonly WorkItemClient _workItemClient;
 
-            return tagSourceItems;
+        public TagsImporter(string organization, string personalAccessToken)
+        {
+            _workItemClient = new WorkItemClient(personalAccessToken);
+        }
+
+        public async Task<List<TagSourceItem>> GetTags()
+        {
+            var workItemRefsResponse = await _workItemClient
+                .GetAssignedWorkItemReferences();
+
+            var workItems = await _workItemClient
+                .GetWorkItemsByReference(workItemRefsResponse.WorkItems);
+
+            var tags = workItems
+                .Select(item => new TagSourceItem
+                {
+                    Tags = new[] { $"#{item.Id}", item.Fields.TeamProject, TagLabels.Billable, ClientPlugin.HiddenTagLabel },
+                    Notes = item.Fields.Title
+                });
+
+            return tags.ToList();
         }
     }
 }

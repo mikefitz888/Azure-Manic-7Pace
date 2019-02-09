@@ -6,33 +6,46 @@ namespace TagPlugin
 {
     public class AzureDevOpsWorkItemTagSourceInstance : BasicTagSourceInstance
     {
-        private string _organization;
-
-        private string _personalAccessToken;
-
-        private string _timeTrackerApiSecret;
+        private TagsImporter _tagsImporter;
 
         public AzureDevOpsWorkItemTagSourceInstance(AzureDevOpsWorkItemTagSettings azureDevOpsWorkItemTagSettings)
         {
-            UpdateSettings(azureDevOpsWorkItemTagSettings);
+            if (string.IsNullOrWhiteSpace(azureDevOpsWorkItemTagSettings.PersonalAccessToken) == false)
+            {
+                _tagsImporter = new TagsImporter(
+                organization: azureDevOpsWorkItemTagSettings.Organization,
+                personalAccessToken: azureDevOpsWorkItemTagSettings.PersonalAccessToken);
+            }            
         }
 
         public override void UpdateSettings(ITagSourceSettings settings)
         {
             var azureDevOpsSettings = (AzureDevOpsWorkItemTagSettings)settings ?? new AzureDevOpsWorkItemTagSettings();
 
-            _organization = azureDevOpsSettings.Organization;
+            if (string.IsNullOrWhiteSpace(azureDevOpsSettings.PersonalAccessToken))
+            {
+                _tagsImporter = null;
+                return;
+            }
 
-            _personalAccessToken = azureDevOpsSettings.PersonalAccessToken;
-
-            _timeTrackerApiSecret = azureDevOpsSettings.TimeTrackerApiSecret;
+            _tagsImporter = new TagsImporter(
+                organization: azureDevOpsSettings.Organization,
+                personalAccessToken: azureDevOpsSettings.PersonalAccessToken);
         }
 
         protected override void Update()
         {
-            TagSourceItem[] tags = TagsImporter.GetTags().ToArray();
+            if (_tagsImporter == null)
+            {
+                return;
+            }
 
-            TagSourceCache.Update(InstanceId, tags, null, true);
+            TagSourceItem[] tags = _tagsImporter
+                .GetTags()
+                .Result
+                .ToArray();
+
+            TagSourceCache.Update(InstanceId, tags, null, false);
         }
     }
 }

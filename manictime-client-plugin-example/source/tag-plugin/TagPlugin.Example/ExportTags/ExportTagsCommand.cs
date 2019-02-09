@@ -12,6 +12,7 @@ using Finkit.ManicTime.Plugins.Timelines.Tags;
 using Finkit.ManicTime.Shared;
 using Finkit.ManicTime.Shared.Logging;
 using Finkit.ManicTime.Shared.Plugins.ServiceProviders.PluginCommands;
+using TagPlugin.Settings;
 using TagPlugins.Core;
 
 namespace TagPlugin.ExportTags
@@ -21,6 +22,10 @@ namespace TagPlugin.ExportTags
         private readonly TagSourceService _tagSourceService;
         private readonly ActivityReaderMessageClient _activityReaderMessageClient;
         private readonly IViewTimelineCache _viewTimelineCache;
+
+        // need a mutex on changes to this
+        private static bool processing = false;
+        private static bool changesQueued = false;
 
         public ExportTagsCommand(
             IEventHub eventHub, 
@@ -35,7 +40,7 @@ namespace TagPlugin.ExportTags
             InvokeOnUiThread(SetCanExecute);
         }
 
-        public override string Name => "Send tags";
+        public override string Name => "Publish Work Logs";
 
         private static void InvokeOnUiThread(Action action)
         {
@@ -49,6 +54,18 @@ namespace TagPlugin.ExportTags
         private void OnTagSourceCacheUpdated(TagSourceCacheUpdatedEvent obj)
         {
             InvokeOnUiThread(SetCanExecute);
+
+            if (CanExecute)
+            {
+                if (processing == false)
+                {
+                    Execute();
+                }
+                else
+                {
+                    changesQueued = true;
+                }
+            }
         }
 
         private void SetCanExecute()
@@ -60,21 +77,45 @@ namespace TagPlugin.ExportTags
 
         public override async void Execute()
         {
+            processing = true;
+
             try
             {
+                var tagSourceInstance = TagPluginsHelper.GetTagSourceInstances(
+                    _tagSourceService.GetTagSourceInstances(),
+                    ClientPlugin.Id)
+                    .First();
+
+                var azureDevOpsSettings = (AzureDevOpsWorkItemTagSettings)tagSourceInstance.Settings ?? new AzureDevOpsWorkItemTagSettings();
+
+                var exporter = new TagsExporter(azureDevOpsSettings.TimeTrackerApiSecret);
+
                 DateRange range = TagsExporter.GetDateRange();
+
                 var tagActivities = await GetTagActivitiesAsync(range.From, range.To).ConfigureAwait(false);
-                TagsExporter.ExportTags(tagActivities, range);
+
+                await exporter.Export(tagActivities, range);
             }
             catch (Exception ex)
             {
                 ApplicationLog.WriteError(ex);
+
+                MessageBox.Show("Failed to publish tags. Check Time-Tracker token.");
+            }
+
+            processing = false;
+
+            if (changesQueued)
+            {
+                changesQueued = false;
+                Execute();
             }
         }
 
         private async Task<TagActivity[]> GetTagActivitiesAsync(int dateFrom, int dateTo)
         {
             var timeline = _viewTimelineCache.LocalTagTimeline;
+
             var activities = await _activityReaderMessageClient.GetActivitiesAsync(
                 timeline,
                 new Date(dateFrom.AsStartDateTime()),
