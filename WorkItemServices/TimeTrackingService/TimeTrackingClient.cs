@@ -7,7 +7,7 @@ using TimeTrackingService.Internal;
 
 namespace TimeTrackingService
 {
-    public class TimeTrackingClient
+    public class TimeTrackingClient : ITimeTrackingClient
     {
         private const string _apiVersion = "3.0-preview";
 

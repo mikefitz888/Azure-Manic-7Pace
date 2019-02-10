@@ -21,9 +21,9 @@ namespace WorkItemService.Demo
 
         private static async Task WorkItems(string personalAccessToken)
         {
-            var client = new WorkItemClient(personalAccessToken);
+            var client = new WorkItemClient(personalAccessToken, "<organizationName>");
 
-            var assignedWorkItemReferences = await client.GetAssignedWorkItemReferences();
+            var assignedWorkItemReferences = await client.GetAssignedWorkItemReferences("<uniqueUserName>");
 
             var workItems = await client.GetWorkItemsByReference(assignedWorkItemReferences.WorkItems);
         }
@@ -36,7 +36,7 @@ namespace WorkItemService.Demo
 
             var items = await client.GetWorkLogs(DateTime.Now.AddDays(-7), DateTime.Now);
 
-            var createRequest = new CreateWorkLogRequest(DateTime.UtcNow, 500, null, "TimeTracker API Test", me.User.Id, ActivityType.Internal);
+            var createRequest = new CreateWorkLogRequest(DateTime.UtcNow, 500, null, "TimeTracker API Test", me.User.Id, "00000000-0000-0000-0000-000000000000");
 
             // var created = await client.CreateWorkLog(createRequest);
 

@@ -6,13 +6,13 @@ using WorkItemServices.Internal;
 
 namespace WorkItemServices
 {
-    public class WorkItemClient
+    public class WorkItemClient : IWorkItemClient
     {
         private readonly string _personalAccessToken, _organization, _baseUrl;
 
         public WorkItemClient(
             string personalAccessToken,
-            string organization = "chorussolutions",
+            string organization,
             string baseUrl = "https://dev.azure.com/")
         {
             _personalAccessToken = personalAccessToken;
@@ -20,10 +20,8 @@ namespace WorkItemServices
             _baseUrl = baseUrl;
         }
 
-        public async Task<WiqlResponse> GetAssignedWorkItemReferences()
+        public async Task<WiqlResponse> GetAssignedWorkItemReferences(string uniqueName)
         {
-            const string name = "Michael Fitzpatrick";
-
             Url url = _baseUrl
                 .AppendPathSegments(_organization, "_apis/wit/wiql")
                 .SetQueryParam("api-version", "5.0");
@@ -33,7 +31,7 @@ namespace WorkItemServices
                .WithBasicAuth("", _personalAccessToken)
                .PostJsonAsync(new
                {
-                   query = $@"Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.WorkItemType] = 'Task' AND [System.AssignedTo] = '{name}' AND [State] <> 'Closed' AND [State] <> 'Removed' order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc"
+                   query = $@"Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.AssignedTo] = '{uniqueName}' AND [System.WorkItemType] = 'Task' AND [State] <> 'Removed' order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc"
                })
                .ReceiveJson<WiqlResponse>();
 

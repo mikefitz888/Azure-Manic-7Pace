@@ -1,11 +1,7 @@
-﻿using TimeTrackingService.Mapping;
-
-namespace TimeTrackingService.Internal
+﻿namespace TimeTrackingService.Internal
 {
     public class ActivityTypeResponse
     {
-        public ActivityType Value { get; }
-
         public string Id { get; }
 
         public string Name { get; }
@@ -17,8 +13,6 @@ namespace TimeTrackingService.Internal
             Id = id;
             Name = name;
             Color = color;
-
-            Value = ActivityTypeConfig.ActivityTypeIdMapping[id];
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using TimeTrackingService.Mapping;
 
 namespace TimeTrackingService.Internal
 {
@@ -25,7 +24,7 @@ namespace TimeTrackingService.Internal
             string workItemId,
             string comment,
             string userId,
-            ActivityType activtyType)
+            string activtyTypeId)
         {
             if (string.IsNullOrWhiteSpace(workItemId) && string.IsNullOrWhiteSpace(comment))
             {
@@ -38,7 +37,7 @@ namespace TimeTrackingService.Internal
             WorkItemId = workItemId;
             Comment = comment;
             UserId = userId;
-            ActivityTypeId = ActivityTypeConfig.ActivityTypeIdMapping[activtyType];
+            ActivityTypeId = activtyTypeId;
         }
     }
 }
