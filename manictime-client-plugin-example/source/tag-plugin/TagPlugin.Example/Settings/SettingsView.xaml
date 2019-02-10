@@ -9,6 +9,9 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <!--CheckBox Grid.Row="0" Grid.Column="0" Content="Overwrite notes" IsChecked="{Binding UseCustomNotes}" /-->
@@ -28,6 +31,33 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="TimeTracker API Secret" VerticalContentAlignment="Center"/>
                 <TextBox Grid.Column="1" Text="{Binding TimeTrackerApiSecret}" />
+            </Grid>
+
+            <Grid Grid.Row="3" Margin="0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.7*" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Azure DevOps Organization" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding Organization}" />
+            </Grid>
+
+            <Grid Grid.Row="4" Margin="0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.7*" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Billable Activity Id" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding BillableActivityId}" />
+            </Grid>
+
+            <Grid Grid.Row="5" Margin="0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.7*" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Non-Billable Activity Id" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding NonBillableActivityId}" />
             </Grid>
         </Grid>
     </Grid>

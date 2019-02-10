@@ -45,6 +45,63 @@ namespace TagPlugin.Settings
             }
         }
 
+        private string _organization;
+
+        public string Organization
+        {
+            get { return _organization; }
+
+            set
+            {
+                if (_organization == value)
+                {
+                    return;
+                }
+
+                _organization = value;
+
+                OnPropertyChanged("Organization");
+            }
+        }
+
+        private string _billableActivityId;
+
+        public string BillableActivityId
+        {
+            get { return _billableActivityId; }
+
+            set
+            {
+                if (_billableActivityId == value)
+                {
+                    return;
+                }
+
+                _billableActivityId = value;
+
+                OnPropertyChanged("BillableActivityId");
+            }
+        }
+
+        private string _nonBillableActivityId;
+
+        public string NonBillableActivityId
+        {
+            get { return _nonBillableActivityId; }
+
+            set
+            {
+                if (_nonBillableActivityId == value)
+                {
+                    return;
+                }
+
+                _nonBillableActivityId = value;
+
+                OnPropertyChanged("NonBillableActivityId");
+            }
+        }
+
         public override void Initialize(ITagSourceSettings settings)
         {
             var azureDevOpsTagSettings = (AzureDevOpsWorkItemTagSettings)settings ?? new AzureDevOpsWorkItemTagSettings();
@@ -54,6 +111,12 @@ namespace TagPlugin.Settings
             PersonalAccessToken = azureDevOpsTagSettings.PersonalAccessToken;
 
             TimeTrackerApiSecret = azureDevOpsTagSettings.TimeTrackerApiSecret;
+
+            Organization = azureDevOpsTagSettings.Organization;
+
+            BillableActivityId = azureDevOpsTagSettings.BillableActivityId;
+
+            NonBillableActivityId = azureDevOpsTagSettings.NonBillableActivityId;
         }
 
         public override Task<bool> BeforeOk()
@@ -67,6 +130,9 @@ namespace TagPlugin.Settings
 
             azureDevOpsWorkItemTagSettings.TimeTrackerApiSecret = TimeTrackerApiSecret;
             azureDevOpsWorkItemTagSettings.PersonalAccessToken = PersonalAccessToken;
+            azureDevOpsWorkItemTagSettings.Organization = Organization;
+            azureDevOpsWorkItemTagSettings.BillableActivityId = BillableActivityId;
+            azureDevOpsWorkItemTagSettings.NonBillableActivityId = NonBillableActivityId;
 
             return Task.FromResult(true);
         }

@@ -28,7 +28,8 @@ it exits properly)
 
 ### Configuration
 
-> **TL;DR** `Puzzle Icon > Plugin Manager > Settings`, then enter API keys.
+> **TL;DR** `Puzzle Icon > Plugin Manager > Settings`, then enter
+> configurations.
 
 You should now see a plugin named `Azure 7Pace Tag Plugin` within
 ManicTime. (Puzzle icon at top right of window > Plugin Manager)
@@ -38,6 +39,18 @@ access to work items), as well as your TimeTracker API secret. The
 TimeTracker API secret can be generated within Azure DevOps. Navigate
 to `Time > Configuration > API`. Check the box to activate reporting
 API access, and press the `Create Token` button to generate the secret.
+
+Below that is the field to configure which organization in Azure DevOps
+the work items should be retrieved from.
+
+Finally you can specify the Activity Type ids for billable, and
+non-billable tasks in 7Pace. There are at least 2 ways to get a
+list of activity types and ids.
+
+1. `GET` request to `https://<organization>.timehub.7pace.com/api/rest/activityTypes?api-version=3.0-preview`,
+   using the Time Tracker Api Token for Bearer Authorization.
+2. In Azure DevOps, navigate to `Time > Configuration > Activity Types`,
+   and inspect the `data-id` attribute of the radio buttons.
 
 ## Features
 
@@ -54,10 +67,7 @@ API access, and press the `Create Token` button to generate the secret.
 
 ### Roadmap
 
-- Currently the plugin is specific to my organization. There are plans
-  to move organization to being a configurable option, as well as
-  configuring 7Pace activity types.
-- Configrable WIQL query for fetching work items to display as tags.
+- Configurable WIQL query for fetching work items to display as tags.
 
 ## Contributing
 

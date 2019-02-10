@@ -14,7 +14,8 @@ namespace TagPlugin
             {
                 _tagsImporter = new TagsImporter(
                 organization: azureDevOpsWorkItemTagSettings.Organization,
-                personalAccessToken: azureDevOpsWorkItemTagSettings.PersonalAccessToken);
+                personalAccessToken: azureDevOpsWorkItemTagSettings.PersonalAccessToken,
+                timeTrackingToken: azureDevOpsWorkItemTagSettings.TimeTrackerApiSecret);
             }            
         }
 
@@ -30,7 +31,8 @@ namespace TagPlugin
 
             _tagsImporter = new TagsImporter(
                 organization: azureDevOpsSettings.Organization,
-                personalAccessToken: azureDevOpsSettings.PersonalAccessToken);
+                personalAccessToken: azureDevOpsSettings.PersonalAccessToken,
+                timeTrackingToken: azureDevOpsSettings.TimeTrackerApiSecret);
         }
 
         protected override void Update()
