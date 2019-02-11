@@ -15,16 +15,16 @@ It achieves this in 2 ways:
 
 ### Installation
 
-> **TL;DR** Copy contents of `dist/` to `%AppData%/Local/Finkit/ManicTime/Plugins/Packages`.
+> **TL;DR** Copy contents of `\dist` to `%systemdrive%\Users\%username%\AppData\Local\Finkit\ManicTime\Plugins`.
 
 First step is to locate the ManicTime plugin directory. To do so, open ManicTime. Click on the cog at the top right of the window, and click
-`Advanced > Open Datebase Folder` in the menu that appears. You will see a folder here called `Plugins`, navigate to `Plugins/Packages`. Here is where you will copy the plugin folder.
+`Advanced > Open Datebase Folder` in the menu that appears. You will see a folder here called `Plugins`, navigate to `Plugins\Packages`. Here is where you will copy the plugin folder. If `\Packages` does not exist, create it.
 
-The plugin folder is located within the `/dist` folder of this repository.
-Copy the folder named `MFitzpatrick.TagSource.Azure7PacePlugin` to the plugin folder opened in the previous step.
+The plugin folder is located within the `\dist` folder of this repository.
+Close ManicTime (The application can be hidden in the [Notification Area](https://docs.microsoft.com/en-us/windows/desktop/uxguide/winenv-notification), so ensure it has been completely exited)
+Copy the folder named `MFitzpatrick.TagSource.Azure7PacePlugin` to the plugin folder opened in the previous step. 
 
-Restart ManicTime. (It hides iteslf in the taskbar by default, so ensure
-it exits properly)
+Restart ManicTime. 
 
 ### Configuration
 
@@ -78,7 +78,7 @@ There are a few important points to note:
   - As a corollary, any `netstandard` libraries must be `1.1` or below.
 
 The projects `WorkItemService`, `TimeTrackingService` and `HttpExtensions`
-all generate package files on build. Located in `<ProjectRoot>/bin/<configuration>`.
+all generate package files on build. Located in `<ProjectRoot>\bin\<configuration>`.
 
 These currently are not hosted and are manually included as a NuGet
 directory in Visual Studio.
