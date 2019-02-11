@@ -14,10 +14,13 @@ namespace TagPlugin.ImportTags
 
         private readonly TimeTrackingClient _timeTrackingClient;
 
-        public TagsImporter(string organization, string personalAccessToken, string timeTrackingToken)
+        private readonly string _wiqlQueryTemplate;
+
+        public TagsImporter(string organization, string personalAccessToken, string timeTrackingToken, string wiqlQueryTemplate)
         {
             _workItemClient = new WorkItemClient(personalAccessToken, organization);
             _timeTrackingClient = new TimeTrackingClient(timeTrackingToken);
+            _wiqlQueryTemplate = wiqlQueryTemplate;
         }
 
         public async Task<List<TagSourceItem>> GetTags()
@@ -25,7 +28,7 @@ namespace TagPlugin.ImportTags
             var me = await _timeTrackingClient.GetMe();
 
             var workItemRefsResponse = await _workItemClient
-                .GetAssignedWorkItemReferences(me.User.UniqueName);
+                .GetAssignedWorkItemReferences(me.User.UniqueName, _wiqlQueryTemplate);
 
             var workItems = await _workItemClient
                 .GetWorkItemsByReference(workItemRefsResponse.WorkItems);

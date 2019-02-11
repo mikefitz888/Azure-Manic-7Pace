@@ -15,7 +15,8 @@ namespace TagPlugin
                 _tagsImporter = new TagsImporter(
                 organization: azureDevOpsWorkItemTagSettings.Organization,
                 personalAccessToken: azureDevOpsWorkItemTagSettings.PersonalAccessToken,
-                timeTrackingToken: azureDevOpsWorkItemTagSettings.TimeTrackerApiSecret);
+                timeTrackingToken: azureDevOpsWorkItemTagSettings.TimeTrackerApiSecret,
+                wiqlQueryTemplate: azureDevOpsWorkItemTagSettings.WiqlQueryTemplate);
             }            
         }
 
@@ -32,7 +33,8 @@ namespace TagPlugin
             _tagsImporter = new TagsImporter(
                 organization: azureDevOpsSettings.Organization,
                 personalAccessToken: azureDevOpsSettings.PersonalAccessToken,
-                timeTrackingToken: azureDevOpsSettings.TimeTrackerApiSecret);
+                timeTrackingToken: azureDevOpsSettings.TimeTrackerApiSecret,
+                wiqlQueryTemplate: azureDevOpsSettings.WiqlQueryTemplate);
         }
 
         protected override void Update()

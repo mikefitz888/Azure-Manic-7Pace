@@ -102,6 +102,25 @@ namespace TagPlugin.Settings
             }
         }
 
+        private string _wiqlQueryTemplate;
+
+        public string WiqlQueryTemplate
+        {
+            get { return _wiqlQueryTemplate; }
+
+            set
+            {
+                if (_wiqlQueryTemplate == value)
+                {
+                    return;
+                }
+
+                _wiqlQueryTemplate = value;
+
+                OnPropertyChanged("WiqlQueryTemplate");
+            }
+        }
+
         public override void Initialize(ITagSourceSettings settings)
         {
             var azureDevOpsTagSettings = (AzureDevOpsWorkItemTagSettings)settings ?? new AzureDevOpsWorkItemTagSettings();
@@ -117,6 +136,8 @@ namespace TagPlugin.Settings
             BillableActivityId = azureDevOpsTagSettings.BillableActivityId;
 
             NonBillableActivityId = azureDevOpsTagSettings.NonBillableActivityId;
+
+            WiqlQueryTemplate = azureDevOpsTagSettings.WiqlQueryTemplate;
         }
 
         public override Task<bool> BeforeOk()
@@ -133,6 +154,7 @@ namespace TagPlugin.Settings
             azureDevOpsWorkItemTagSettings.Organization = Organization;
             azureDevOpsWorkItemTagSettings.BillableActivityId = BillableActivityId;
             azureDevOpsWorkItemTagSettings.NonBillableActivityId = NonBillableActivityId;
+            azureDevOpsWorkItemTagSettings.WiqlQueryTemplate = WiqlQueryTemplate;
 
             return Task.FromResult(true);
         }

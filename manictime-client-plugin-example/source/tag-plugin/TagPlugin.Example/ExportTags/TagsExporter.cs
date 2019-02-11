@@ -38,7 +38,7 @@ namespace TagPlugin.ExportTags
 
             var me = await _client.GetMe();
 
-            foreach (var tagActivity in tagActivities)
+            foreach (var tagActivity in filteredTags)
             {
                 var request = ConstructCreateWorkLogRequest(tagActivity, me.User.Id);
 

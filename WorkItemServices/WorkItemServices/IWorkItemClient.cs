@@ -6,7 +6,7 @@ namespace WorkItemServices
 {
     public interface IWorkItemClient
     {
-        Task<WiqlResponse> GetAssignedWorkItemReferences(string uniqueName);
+        Task<WiqlResponse> GetAssignedWorkItemReferences(string uniqueName, string queryTemplate);
         Task<IEnumerable<WorkItem>> GetWorkItemsByReference(IEnumerable<WorkItemReference> workItemReferences);
     }
 }

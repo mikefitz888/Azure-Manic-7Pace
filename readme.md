@@ -64,10 +64,7 @@ list of activity types and ids.
 - Added Tags (that originate from this plugin) will syncronize with
   7Pace, this includes all creates, edits, deletes of Tags dated
   within the last 7 days.
-
-### Roadmap
-
-- Configurable WIQL query for fetching work items to display as tags.
+- Configurable WIQL query for retrieving items from Azure DevOps.
 
 ## Contributing
 
