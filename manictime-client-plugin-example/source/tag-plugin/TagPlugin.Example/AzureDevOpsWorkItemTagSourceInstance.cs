@@ -12,11 +12,9 @@ namespace TagPlugin
         {
             if (string.IsNullOrWhiteSpace(azureDevOpsWorkItemTagSettings.PersonalAccessToken) == false)
             {
-                _tagsImporter = new TagsImporter(
-                organization: azureDevOpsWorkItemTagSettings.Organization,
-                personalAccessToken: azureDevOpsWorkItemTagSettings.PersonalAccessToken,
-                timeTrackingToken: azureDevOpsWorkItemTagSettings.TimeTrackerApiSecret,
-                wiqlQueryTemplate: azureDevOpsWorkItemTagSettings.WiqlQueryTemplate);
+                var config = CreateConfigFrom(azureDevOpsWorkItemTagSettings);
+
+                _tagsImporter = new TagsImporter(config);
             }            
         }
 
@@ -27,14 +25,13 @@ namespace TagPlugin
             if (string.IsNullOrWhiteSpace(azureDevOpsSettings.PersonalAccessToken))
             {
                 _tagsImporter = null;
+
                 return;
             }
 
-            _tagsImporter = new TagsImporter(
-                organization: azureDevOpsSettings.Organization,
-                personalAccessToken: azureDevOpsSettings.PersonalAccessToken,
-                timeTrackingToken: azureDevOpsSettings.TimeTrackerApiSecret,
-                wiqlQueryTemplate: azureDevOpsSettings.WiqlQueryTemplate);
+            TagsImporterConfig config = CreateConfigFrom(azureDevOpsSettings);
+
+            _tagsImporter = new TagsImporter(config);
         }
 
         protected override void Update()
@@ -45,11 +42,24 @@ namespace TagPlugin
             }
 
             TagSourceItem[] tags = _tagsImporter
-                .GetTags()
+                .GetTagsAsync()
                 .Result
                 .ToArray();
 
             TagSourceCache.Update(InstanceId, tags, null, false);
+        }
+
+        private static TagsImporterConfig CreateConfigFrom(AzureDevOpsWorkItemTagSettings settings)
+        {
+            return new TagsImporterConfig
+            {
+                Organization = settings.Organization,
+                PersonalAccessToken = settings.PersonalAccessToken,
+                TimeTrackingToken = settings.TimeTrackerApiSecret,
+
+                BillableQueryTemplate = settings.BillableWiqlQueryTemplate,
+                NonBillableQueryTemplate = settings.NonBillableWiqlQueryTemplate
+            };
         }
     }
 }

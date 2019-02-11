@@ -22,9 +22,9 @@ First step is to locate the ManicTime plugin directory. To do so, open ManicTime
 
 The plugin folder is located within the `\dist` folder of this repository.
 Close ManicTime (The application can be hidden in the [Notification Area](https://docs.microsoft.com/en-us/windows/desktop/uxguide/winenv-notification), so ensure it has been completely exited)
-Copy the folder named `MFitzpatrick.TagSource.Azure7PacePlugin` to the plugin folder opened in the previous step. 
+Copy the folder named `MFitzpatrick.TagSource.Azure7PacePlugin` to the plugin folder opened in the previous step.
 
-Restart ManicTime. 
+Restart ManicTime.
 
 ### Configuration
 
@@ -65,6 +65,7 @@ list of activity types and ids.
   7Pace, this includes all creates, edits, deletes of Tags dated
   within the last 7 days.
 - Configurable WIQL query for retrieving items from Azure DevOps.
+  - Separate Billable + Non-Billable queries.
 
 ## Contributing
 

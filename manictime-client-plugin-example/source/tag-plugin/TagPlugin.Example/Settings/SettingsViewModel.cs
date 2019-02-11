@@ -102,22 +102,41 @@ namespace TagPlugin.Settings
             }
         }
 
-        private string _wiqlQueryTemplate;
+        private string _billableWiqlQueryTemplate;
 
-        public string WiqlQueryTemplate
+        public string BillableWiqlQueryTemplate
         {
-            get { return _wiqlQueryTemplate; }
+            get { return _billableWiqlQueryTemplate; }
 
             set
             {
-                if (_wiqlQueryTemplate == value)
+                if (_billableWiqlQueryTemplate == value)
                 {
                     return;
                 }
 
-                _wiqlQueryTemplate = value;
+                _billableWiqlQueryTemplate = value;
 
-                OnPropertyChanged("WiqlQueryTemplate");
+                OnPropertyChanged("BillableWiqlQueryTemplate");
+            }
+        }
+
+        private string _nonBillableWiqlQueryTemplate;
+
+        public string NonBillableWiqlQueryTemplate
+        {
+            get { return _nonBillableWiqlQueryTemplate; }
+
+            set
+            {
+                if (_nonBillableWiqlQueryTemplate == value)
+                {
+                    return;
+                }
+
+                _nonBillableWiqlQueryTemplate = value;
+
+                OnPropertyChanged("NonBillableWiqlQueryTemplate");
             }
         }
 
@@ -137,7 +156,9 @@ namespace TagPlugin.Settings
 
             NonBillableActivityId = azureDevOpsTagSettings.NonBillableActivityId;
 
-            WiqlQueryTemplate = azureDevOpsTagSettings.WiqlQueryTemplate;
+            BillableWiqlQueryTemplate = azureDevOpsTagSettings.BillableWiqlQueryTemplate;
+
+            NonBillableWiqlQueryTemplate = azureDevOpsTagSettings.NonBillableWiqlQueryTemplate;
         }
 
         public override Task<bool> BeforeOk()
@@ -154,7 +175,8 @@ namespace TagPlugin.Settings
             azureDevOpsWorkItemTagSettings.Organization = Organization;
             azureDevOpsWorkItemTagSettings.BillableActivityId = BillableActivityId;
             azureDevOpsWorkItemTagSettings.NonBillableActivityId = NonBillableActivityId;
-            azureDevOpsWorkItemTagSettings.WiqlQueryTemplate = WiqlQueryTemplate;
+            azureDevOpsWorkItemTagSettings.BillableWiqlQueryTemplate = BillableWiqlQueryTemplate;
+            azureDevOpsWorkItemTagSettings.NonBillableWiqlQueryTemplate = NonBillableWiqlQueryTemplate;
 
             return Task.FromResult(true);
         }
