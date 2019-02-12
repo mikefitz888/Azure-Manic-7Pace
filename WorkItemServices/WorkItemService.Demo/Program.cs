@@ -23,7 +23,7 @@ namespace WorkItemService.Demo
         {
             var client = new WorkItemClient(personalAccessToken, "<organizationName>");
 
-            var assignedWorkItemReferences = await client.GetAssignedWorkItemReferences("<uniqueUserName>");
+            var assignedWorkItemReferences = await client.GetAssignedWorkItemReferences("<uniqueUserName>", "query");
 
             var workItems = await client.GetWorkItemsByReference(assignedWorkItemReferences.WorkItems);
         }

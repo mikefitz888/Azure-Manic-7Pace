@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Finkit.ManicTime.Client.Main.Logic;
 using Finkit.ManicTime.Common;
@@ -38,11 +39,24 @@ namespace TagPlugin.ExportTags
 
             var me = await _client.GetMe();
 
-            foreach (var tagActivity in tagActivities)
+            foreach (var tagActivity in filteredTags)
             {
                 var request = ConstructCreateWorkLogRequest(tagActivity, me.User.Id);
 
-                var existingLog = filteredWorkItems.SingleOrDefault(item => int.Parse(item.Comment) == tagActivity.ActivityId);
+                var existingFormat = new Regex($@"via{ClientPlugin.HiddenTagLabel}\[(\d+)\]");
+
+                var existingLog = filteredWorkItems
+                    .SingleOrDefault(item =>
+                    {
+                        Match match = existingFormat.Match(item.Comment);
+
+                        if (match.Success && int.Parse(match.Groups[1].Value) == tagActivity.ActivityId)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    });
 
                 if (existingLog != null)
                 {
@@ -52,7 +66,8 @@ namespace TagPlugin.ExportTags
                     if (existingLog.Timestamp == request.TimeStamp &&
                         existingLog.Length == request.Length &&
                         existingLog.WorkItemId == request.WorkItemId &&
-                        existingLog.ActivityType.Id == request.ActivityTypeId)
+                        existingLog.ActivityType.Id == request.ActivityTypeId &&
+                        existingLog.Comment == request.Comment)
                     {
                         continue;
                     }
@@ -80,12 +95,12 @@ namespace TagPlugin.ExportTags
             var activityTypeId = billable ? _billableActivityId : _nonBillableActivityId;
 
             return new CreateWorkLogRequest(
-                tagActivity.StartTime.UtcDateTime,
-                Convert.ToInt32(tagActivity.Duration.TotalSeconds),
-                workItemId,
-                tagActivity.ActivityId.ToString(),
-                userId,
-                activityTypeId);
+                timeStamp: tagActivity.StartTime.UtcDateTime,
+                length: Convert.ToInt32(tagActivity.Duration.TotalSeconds),
+                workItemId: workItemId,
+                comment: $"via{ClientPlugin.HiddenTagLabel}[{tagActivity.ActivityId}]\n{tagActivity.Notes}",
+                userId: userId,
+                activtyTypeId: activityTypeId);
         }
 
         public static DateRange GetDateRange()

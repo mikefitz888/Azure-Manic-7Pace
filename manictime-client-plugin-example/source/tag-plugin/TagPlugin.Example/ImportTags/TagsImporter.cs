@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Finkit.ManicTime.Common.TagSources;
 using Finkit.ManicTime.Shared.Tags.Labels;
 using TimeTrackingService;
+using TimeTrackingService.Internal;
 using WorkItemServices;
+using WorkItemServices.Internal;
 
 namespace TagPlugin.ImportTags
 {
@@ -14,30 +17,70 @@ namespace TagPlugin.ImportTags
 
         private readonly TimeTrackingClient _timeTrackingClient;
 
-        public TagsImporter(string organization, string personalAccessToken, string timeTrackingToken)
+        private readonly string _billableQueryTemplate;
+
+        private readonly string _nonBillableQueryTemplate;
+
+        public TagsImporter(TagsImporterConfig config)
         {
-            _workItemClient = new WorkItemClient(personalAccessToken, organization);
-            _timeTrackingClient = new TimeTrackingClient(timeTrackingToken);
+            _workItemClient = new WorkItemClient(config.PersonalAccessToken, config.Organization);
+            _timeTrackingClient = new TimeTrackingClient(config.TimeTrackingToken);
+            _billableQueryTemplate = config.BillableQueryTemplate;
+            _nonBillableQueryTemplate = config.NonBillableQueryTemplate;
         }
 
-        public async Task<List<TagSourceItem>> GetTags()
+        public async Task<List<TagSourceItem>> GetTagsAsync()
         {
-            var me = await _timeTrackingClient.GetMe();
+            Me me = await _timeTrackingClient.GetMe();
 
-            var workItemRefsResponse = await _workItemClient
-                .GetAssignedWorkItemReferences(me.User.UniqueName);
+            IEnumerable<TagSourceItem> billableTags = await GetBillableTagsAsync(me);
 
-            var workItems = await _workItemClient
+            IEnumerable<TagSourceItem> nonBillableTags = await GetNonBillableTagsAsync(me);
+
+            return billableTags
+                .Concat(nonBillableTags)
+                .ToList();
+        }
+
+        private async Task<IEnumerable<TagSourceItem>> GetBillableTagsAsync(Me me)
+        {
+            IEnumerable<WorkItem> billableWorkItems = await GetWorkItems(me, _billableQueryTemplate);
+
+            return billableWorkItems
+                .Select(AsTagSourceItem(billable: true));
+        }
+
+        private async Task<IEnumerable<TagSourceItem>> GetNonBillableTagsAsync(Me me)
+        {
+            IEnumerable<WorkItem> nonBillableWorkItems = await GetWorkItems(me, _nonBillableQueryTemplate);
+
+            return nonBillableWorkItems
+                .Select(AsTagSourceItem(billable: false));
+        }
+
+        private async Task<IEnumerable<WorkItem>> GetWorkItems(Me me, string queryTemplate)
+        {
+            WiqlResponse workItemRefsResponse = await _workItemClient
+                .GetAssignedWorkItemReferences(me.User.UniqueName, queryTemplate);
+
+            return await _workItemClient
                 .GetWorkItemsByReference(workItemRefsResponse.WorkItems);
-
-            var tags = workItems
-                .Select(item => new TagSourceItem
-                {
-                    Tags = new[] { $"#{item.Id}", item.Fields.TeamProject, TagLabels.Billable, ClientPlugin.HiddenTagLabel },
-                    Notes = item.Fields.Title
-                });
-
-            return tags.ToList();
         }
+
+        private static Func<WorkItem, TagSourceItem> AsTagSourceItem(bool billable) => (WorkItem workItem) =>
+        {
+            List<string> tags = new List<string> { $"#{workItem.Id}", workItem.Fields.TeamProject, ClientPlugin.HiddenTagLabel };
+
+            if (billable)
+            {
+                tags.Add(TagLabels.Billable);
+            }
+
+            return new TagSourceItem
+            {
+                Tags = tags.ToArray(),
+                Notes = workItem.Fields.Title
+            };
+        };
     }
 }

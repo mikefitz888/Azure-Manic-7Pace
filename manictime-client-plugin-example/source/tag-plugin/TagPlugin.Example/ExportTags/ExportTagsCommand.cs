@@ -99,8 +99,6 @@ namespace TagPlugin.ExportTags
             catch (Exception ex)
             {
                 ApplicationLog.WriteError(ex);
-
-                MessageBox.Show("Failed to publish tags. Check Time-Tracker token.");
             }
 
             processing = false;

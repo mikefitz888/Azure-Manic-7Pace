@@ -20,18 +20,20 @@ namespace WorkItemServices
             _baseUrl = baseUrl;
         }
 
-        public async Task<WiqlResponse> GetAssignedWorkItemReferences(string uniqueName)
+        public async Task<WiqlResponse> GetAssignedWorkItemReferences(string uniqueName, string queryTemplate)
         {
             Url url = _baseUrl
                 .AppendPathSegments(_organization, "_apis/wit/wiql")
                 .SetQueryParam("api-version", "5.0");
+
+            string query = queryTemplate.Replace("@UniqueName", uniqueName);
 
 
             WiqlResponse response = await url
                .WithBasicAuth("", _personalAccessToken)
                .PostJsonAsync(new
                {
-                   query = $@"Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.AssignedTo] = '{uniqueName}' AND [System.WorkItemType] = 'Task' AND [State] <> 'Removed' order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc"
+                   query
                })
                .ReceiveJson<WiqlResponse>();
 

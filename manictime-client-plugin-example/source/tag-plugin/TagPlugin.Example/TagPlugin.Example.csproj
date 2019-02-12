@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImportTags\TagsImporterConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientPlugin.cs" />
     <Compile Include="ExportTags\ExportTagsCommand.cs" />
