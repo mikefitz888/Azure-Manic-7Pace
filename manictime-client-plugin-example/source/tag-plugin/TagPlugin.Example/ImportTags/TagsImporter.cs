@@ -24,7 +24,7 @@ namespace TagPlugin.ImportTags
         public TagsImporter(TagsImporterConfig config)
         {
             _workItemClient = new WorkItemClient(config.PersonalAccessToken, config.Organization);
-            _timeTrackingClient = new TimeTrackingClient(config.TimeTrackingToken);
+            _timeTrackingClient = new TimeTrackingClient(config.TimeTrackingToken, config.Organization);
             _billableQueryTemplate = config.BillableQueryTemplate;
             _nonBillableQueryTemplate = config.NonBillableQueryTemplate;
         }
