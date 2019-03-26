@@ -30,7 +30,7 @@ namespace WorkItemService.Demo
 
         private static async Task TimeTracker(string timeTrackerToken)
         {
-            var client = new TimeTrackingClient(timeTrackerToken);
+            var client = new TimeTrackingClient(timeTrackerToken, "https://<organizationName>.timehub.7pace.com/api/rest/");
 
             var me = await client.GetMe();
 

@@ -10,6 +10,6 @@ namespace TimeTrackingService
         Task<WorkLog> CreateWorkLog(CreateWorkLogRequest createWorkLogRequest);
         Task DeleteWorkLog(string id);
         Task<Me> GetMe();
-        Task<IEnumerable<WorkLog>> GetWorkLogs(DateTime from, DateTime to, int skip = 0);
+        Task<IEnumerable<WorkLog>> GetWorkLogs(DateTime from, DateTime to);
     }
 }
