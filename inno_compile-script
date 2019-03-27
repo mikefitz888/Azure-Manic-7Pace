@@ -31,7 +31,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginSpec.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\*"; DestDir: "{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin\lib"; Flags: ignoreversion
+Source: "C:\Raw\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Raw\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginSpec.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Raw\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\*"; DestDir: "{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin\lib"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
