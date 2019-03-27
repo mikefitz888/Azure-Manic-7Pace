@@ -20,17 +20,18 @@ namespace TagPlugin.ExportTags
 
         private readonly string _nonBillableActivityId;
 
-        private readonly DateTime _start = DateTime.Today.AddDays(-7);
+        private readonly DateTime _start;
 
         private readonly DateTime _end = DateTime.Today.AddDays(1);
 
-        public TagsExporter(string organizationName, string timeTrackerToken, string billableActivityId, string nonBillableActivityId)
+        public TagsExporter(string organizationName, string timeTrackerToken, string billableActivityId, string nonBillableActivityId, int days)
         {
             var baseUrl = $"https://{organizationName}.timehub.7pace.com/api/rest/";
 
             _client = new TimeTrackingClient(timeTrackerToken, baseUrl);
             _billableActivityId = billableActivityId;
             _nonBillableActivityId = nonBillableActivityId;
+            _start = DateTime.Today.AddDays(-days);
         }
 
         public async Task Export(TagActivity[] unfilteredTagActivities, DateRange range)
@@ -65,9 +66,9 @@ namespace TagPlugin.ExportTags
             }
         }
 
-        public static DateRange GetDateRange()
+        public static DateRange GetDateRange(int days)
         {
-            var from = DateTime.Today.AddDays(-7);
+            var from = DateTime.Today.AddDays(-days);
 
             var to = DateTime.Today;
 

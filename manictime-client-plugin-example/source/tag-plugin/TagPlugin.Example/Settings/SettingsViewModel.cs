@@ -140,6 +140,25 @@ namespace TagPlugin.Settings
             }
         }
 
+        private string _days;
+
+        public string Days
+        {
+            get { return _days; }
+
+            set
+            {
+                if (_days == value)
+                {
+                    return;
+                }
+
+                _days = value;
+
+                OnPropertyChanged("Days");
+            }
+        }
+
         public override void Initialize(ITagSourceSettings settings)
         {
             var azureDevOpsTagSettings = (AzureDevOpsWorkItemTagSettings)settings ?? new AzureDevOpsWorkItemTagSettings();
@@ -159,6 +178,8 @@ namespace TagPlugin.Settings
             BillableWiqlQueryTemplate = azureDevOpsTagSettings.BillableWiqlQueryTemplate;
 
             NonBillableWiqlQueryTemplate = azureDevOpsTagSettings.NonBillableWiqlQueryTemplate;
+
+            Days = azureDevOpsTagSettings.Days;
         }
 
         public override Task<bool> BeforeOk()
@@ -177,6 +198,12 @@ namespace TagPlugin.Settings
             azureDevOpsWorkItemTagSettings.NonBillableActivityId = NonBillableActivityId;
             azureDevOpsWorkItemTagSettings.BillableWiqlQueryTemplate = BillableWiqlQueryTemplate;
             azureDevOpsWorkItemTagSettings.NonBillableWiqlQueryTemplate = NonBillableWiqlQueryTemplate;
+
+            if (int.TryParse(Days, out var days) == false) {
+                Days = "7";
+            }
+
+            azureDevOpsWorkItemTagSettings.Days = Days;
 
             return Task.FromResult(true);
         }
