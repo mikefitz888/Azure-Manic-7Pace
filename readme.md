@@ -20,6 +20,8 @@ Download Install.exe and run as administrator. This will extact the plugin to th
 
 Restart ManicTime.
 
+*If you wish to compile the installer yourself please see the Wiki Entry*
+
 ### Configuration
 
 > **TL;DR** `Puzzle Icon > Plugin Manager > Settings`, then enter
