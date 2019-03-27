@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Users\mikef\AppData\Local\Finkit\ManicTime\Plugins\Packages\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\..\Users\Michael.Fitzpatrick\AppData\Local\Finkit\ManicTime\Plugins\Packages\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
