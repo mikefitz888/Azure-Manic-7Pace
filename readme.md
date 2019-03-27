@@ -15,7 +15,9 @@ It achieves this in 2 ways:
 
 ### Installation
 
-> **TL;DR** Copy contents of `\dist` to `%systemdrive%\Users\%username%\AppData\Local\Finkit\ManicTime\Plugins`.
+> **TL;DR** Right click `install.ps1` > `Run with PowerShell`
+> **OR** Copy contents of `\manictime-client-plugin-example\installable-plugin\Release\Plugins\Packages\`
+to `%systemdrive%\Users\%username%\AppData\Local\Finkit\ManicTime\Plugins`.
 
 First step is to locate the ManicTime plugin directory. To do so, open ManicTime. Click on the cog at the top right of the window, and click
 `Advanced > Open Datebase Folder` in the menu that appears. You will see a folder here called `Plugins`, navigate to `Plugins\Packages`. Here is where you will copy the plugin folder. If `\Packages` does not exist, create it.

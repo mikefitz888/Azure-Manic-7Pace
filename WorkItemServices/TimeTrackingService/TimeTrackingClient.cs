@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Flurl;
 using HttpExtensions;
@@ -9,14 +10,17 @@ namespace TimeTrackingService
 {
     public class TimeTrackingClient : ITimeTrackingClient
     {
-        private const string _apiVersion = "3.0-preview";
+        private const int PageSize = 100;
+
+        private const string ApiVersion = "3.0-preview";
 
         private readonly string _bearerToken;
 
-        private readonly string _baseUrl = "https://chorussolutions.timehub.7pace.com/api/rest/";
+        private readonly string _baseUrl;
 
-        public TimeTrackingClient(string timeTrackerToken)
+        public TimeTrackingClient(string timeTrackerToken, string baseUrl)
         {
+            _baseUrl = baseUrl;
             _bearerToken = timeTrackerToken;
         }
 
@@ -24,9 +28,9 @@ namespace TimeTrackingService
         {
             Url url = _baseUrl
                 .AppendPathSegment("workLogs")
-                .SetQueryParam("api-version", _apiVersion);
+                .SetQueryParam("api-version", ApiVersion);
 
-            var response = await url
+            ApiResponse<WorkLog> response = await url
                 .WithOAuthBearerToken(_bearerToken)
                 .PostJsonAsync(createWorkLogRequest)
                 .ReceiveJson<ApiResponse<WorkLog>>();
@@ -34,16 +38,39 @@ namespace TimeTrackingService
             return response.Data;
         }
 
-        public async Task<IEnumerable<WorkLog>> GetWorkLogs(DateTime from, DateTime to, int skip = 0)
+        public async Task<IEnumerable<WorkLog>> GetWorkLogs(DateTime from, DateTime to)
+        {
+            int fetchedCount;
+            var skip = 0;
+
+            IEnumerable<WorkLog> worklogs = new List<WorkLog>();
+
+            do
+            {
+                IEnumerable<WorkLog> fetchedWorkLogs = await GetWorkLogsPage(from, to, skip);
+
+                List<WorkLog> fetchedWorkLogsList = fetchedWorkLogs.ToList();
+
+                worklogs = worklogs.Concat(fetchedWorkLogsList);
+
+                fetchedCount = fetchedWorkLogsList.Count;
+                skip += PageSize;
+            }
+            while (fetchedCount == PageSize);
+
+            return worklogs;
+        }
+
+        private async Task<IEnumerable<WorkLog>> GetWorkLogsPage(DateTime from, DateTime to, int skip)
         {
             Url url = _baseUrl
                 .AppendPathSegment("workLogs")
                 .SetQueryParams(new Dictionary<string, object>
                 {
-                    { "api-version", _apiVersion },
+                    { "api-version", ApiVersion },
                     { "$fromTimestamp", from },
                     { "$toTimestamp", to },
-                    { "$count", 100 },
+                    { "$count", PageSize },
                     { "$skip", skip }
                 });
 
@@ -58,7 +85,7 @@ namespace TimeTrackingService
         {
             Url url = _baseUrl
                 .AppendPathSegments("workLogs", id)
-                .SetQueryParam("api-version", _apiVersion);
+                .SetQueryParam("api-version", ApiVersion);
 
             await url
                 .WithOAuthBearerToken(_bearerToken)
@@ -69,7 +96,7 @@ namespace TimeTrackingService
         {
             Url url = _baseUrl
                 .AppendPathSegment("me")
-                .SetQueryParam("api-version", _apiVersion);
+                .SetQueryParam("api-version", ApiVersion);
 
             ApiResponse<Me> response = await url
                 .WithOAuthBearerToken(_bearerToken)

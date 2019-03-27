@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,69 +20,58 @@ namespace TagPlugin.ExportTags
 
         private readonly string _nonBillableActivityId;
 
-        public TagsExporter(string timeTrackerToken, string billableActivityId, string nonBillableActivityId)
+        private readonly DateTime _start = DateTime.Today.AddDays(-7);
+
+        private readonly DateTime _end = DateTime.Today.AddDays(1);
+
+        public TagsExporter(string organizationName, string timeTrackerToken, string billableActivityId, string nonBillableActivityId)
         {
-            _client = new TimeTrackingClient(timeTrackerToken);
+            var baseUrl = $"https://{organizationName}.timehub.7pace.com/api/rest/";
+
+            _client = new TimeTrackingClient(timeTrackerToken, baseUrl);
             _billableActivityId = billableActivityId;
             _nonBillableActivityId = nonBillableActivityId;
         }
 
-        public async Task Export(TagActivity[] tagActivities, DateRange range)
+        public async Task Export(TagActivity[] unfilteredTagActivities, DateRange range)
         {
-            // Only include tags with hidden display key
-            var filteredTags = tagActivities
-                .Where(ta => ta.Groups.Any(tag => tag.Key == ClientPlugin.HiddenTagLabel.ToLower()));
+            var tags = GetTags(unfilteredTagActivities);
 
-            var existingWorkItems = await _client.GetWorkLogs(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(1));
-
-            var filteredWorkItems = existingWorkItems
-                .Where(item => item.Flags.IsFromApi == true);
+            var workLogs = GetWorkLogs()
+                .ToList();
 
             var me = await _client.GetMe();
 
-            foreach (var tagActivity in filteredTags)
+            foreach (var tagActivity in tags)
             {
-                var request = ConstructCreateWorkLogRequest(tagActivity, me.User.Id);
+                var createWorkLogRequest = ConstructCreateWorkLogRequest(tagActivity, me.User.Id);
 
-                var existingFormat = new Regex($@"via{ClientPlugin.HiddenTagLabel}\[(\d+)\]");
+                var existingDuplicateWorkLogs = FindDuplicateExistingWorkLogs(workLogs, tagActivity)
+                    .ToList();
 
-                var existingLog = filteredWorkItems
-                    .SingleOrDefault(item =>
-                    {
-                        Match match = existingFormat.Match(item.Comment);
+                var existingConflictWorkLog = await FirstOrDefaultDeleteRemaining(existingDuplicateWorkLogs);
 
-                        if (match.Success && int.Parse(match.Groups[1].Value) == tagActivity.ActivityId)
-                        {
-                            return true;
-                        }
+                // Remove handled WorkLogs from list
+                workLogs = workLogs
+                    .Where(log => existingDuplicateWorkLogs.Contains(log) == false)
+                    .ToList();
 
-                        return false;
-                    });
-
-                if (existingLog != null)
-                {
-                    filteredWorkItems = filteredWorkItems
-                            .Where(item => item != existingLog);
-
-                    if (existingLog.Timestamp == request.TimeStamp &&
-                        existingLog.Length == request.Length &&
-                        existingLog.WorkItemId == request.WorkItemId &&
-                        existingLog.ActivityType.Id == request.ActivityTypeId &&
-                        existingLog.Comment == request.Comment)
-                    {
-                        continue;
-                    }
-
-                    await _client.DeleteWorkLog(existingLog.Id);
-                }
-
-                await _client.CreateWorkLog(request);
+                await CreateIdempotent(existingConflictWorkLog, createWorkLogRequest);
             }
 
-            foreach (var item in filteredWorkItems)
+            foreach (var item in workLogs)
             {
                 await _client.DeleteWorkLog(item.Id);
             }
+        }
+
+        public static DateRange GetDateRange()
+        {
+            var from = DateTime.Today.AddDays(-7);
+
+            var to = DateTime.Today;
+
+            return new DateRange(DateTimeHelper.FromUnshiftedDateTime(from), DateTimeHelper.FromUnshiftedDateTime(to));
         }
 
         private CreateWorkLogRequest ConstructCreateWorkLogRequest(TagActivity tagActivity, string userId)
@@ -103,13 +93,90 @@ namespace TagPlugin.ExportTags
                 activtyTypeId: activityTypeId);
         }
 
-        public static DateRange GetDateRange()
+        private IEnumerable<TagActivity> GetTags(TagActivity[] tagActivities)
         {
-            var from = DateTime.Today.AddDays(-7);
+            foreach (TagActivity tagActivity in tagActivities)
+            {
+                if (tagActivity.Groups.Any(tag => tag.Key == ClientPlugin.HiddenTagLabel.ToLower()) == false)
+                {
+                    continue;
+                }
 
-            var to = DateTime.Today;
+                if (tagActivity.StartTime.DateTime < _start || tagActivity.StartTime.DateTime > _end)
+                {
+                    continue;
+                }
 
-            return new DateRange(DateTimeHelper.FromUnshiftedDateTime(from), DateTimeHelper.FromUnshiftedDateTime(to));
+                yield return tagActivity;
+            }
+        }
+
+        private IEnumerable<WorkLog> GetWorkLogs()
+        {
+            var workLogs = _client.GetWorkLogs(_start, _end).Result;
+
+            foreach (WorkLog workLog in workLogs)
+            {
+                if (workLog.Flags.IsFromApi == false)
+                {
+                    continue;
+                }
+
+                yield return workLog;
+            }
+        }
+
+        private IEnumerable<WorkLog> FindDuplicateExistingWorkLogs(IEnumerable<WorkLog> workLogs, TagActivity tagActivity)
+        {
+            var existingFormat = new Regex($@"via{ClientPlugin.HiddenTagLabel}\[(\d+)\]");
+
+            foreach (WorkLog workLog in workLogs)
+            {
+                Match match = existingFormat.Match(workLog.Comment);
+
+                if (match.Success == false || int.Parse(match.Groups[1].Value) != tagActivity.ActivityId)
+                {
+                    continue;
+                }
+
+                yield return workLog;
+            }
+        }
+
+        private async Task<WorkLog> FirstOrDefaultDeleteRemaining(IList<WorkLog> workLogs)
+        {
+            var workLogsToDelete = workLogs.Skip(1);
+
+            foreach (WorkLog workLog in workLogsToDelete)
+            {
+                await _client.DeleteWorkLog(workLog.Id);
+            }
+
+            return workLogs.FirstOrDefault();
+        }
+
+        private bool IsDuplicate(WorkLog workLog, CreateWorkLogRequest request)
+        {
+            return workLog.Timestamp == request.TimeStamp &&
+                   workLog.Length == request.Length &&
+                   workLog.WorkItemId == request.WorkItemId &&
+                   workLog.ActivityType.Id == request.ActivityTypeId &&
+                   workLog.Comment == request.Comment;
+        }
+
+        private async Task CreateIdempotent(WorkLog existingConflictWorkLog, CreateWorkLogRequest createWorkLogRequest)
+        {
+            if (existingConflictWorkLog != null)
+            {
+                if (IsDuplicate(existingConflictWorkLog, createWorkLogRequest))
+                {
+                    return;
+                }
+
+                await _client.DeleteWorkLog(existingConflictWorkLog.Id);
+            }
+
+            await _client.CreateWorkLog(createWorkLogRequest);
         }
     }
 }

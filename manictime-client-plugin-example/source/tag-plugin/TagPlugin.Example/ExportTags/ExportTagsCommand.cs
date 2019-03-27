@@ -88,7 +88,11 @@ namespace TagPlugin.ExportTags
 
                 var azureDevOpsSettings = (AzureDevOpsWorkItemTagSettings)tagSourceInstance.Settings ?? new AzureDevOpsWorkItemTagSettings();
 
-                var exporter = new TagsExporter(azureDevOpsSettings.TimeTrackerApiSecret, azureDevOpsSettings.BillableActivityId, azureDevOpsSettings.NonBillableActivityId);
+                var exporter = new TagsExporter(
+                    organizationName: azureDevOpsSettings.Organization,
+                    timeTrackerToken: azureDevOpsSettings.TimeTrackerApiSecret,
+                    billableActivityId: azureDevOpsSettings.BillableActivityId,
+                    nonBillableActivityId: azureDevOpsSettings.NonBillableActivityId);
 
                 DateRange range = TagsExporter.GetDateRange();
 
