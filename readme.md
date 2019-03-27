@@ -15,16 +15,8 @@ It achieves this in 2 ways:
 
 ### Installation
 
-> **TL;DR** Right click `install.ps1` > `Run with PowerShell`
-> **OR** Copy contents of `\manictime-client-plugin-example\installable-plugin\Release\Plugins\Packages\`
-to `%systemdrive%\Users\%username%\AppData\Local\Finkit\ManicTime\Plugins`.
-
-First step is to locate the ManicTime plugin directory. To do so, open ManicTime. Click on the cog at the top right of the window, and click
-`Advanced > Open Datebase Folder` in the menu that appears. You will see a folder here called `Plugins`, navigate to `Plugins\Packages`. Here is where you will copy the plugin folder. If `\Packages` does not exist, create it.
-
-The plugin folder is located within the `\dist` folder of this repository.
-Close ManicTime (The application can be hidden in the [Notification Area](https://docs.microsoft.com/en-us/windows/desktop/uxguide/winenv-notification), so ensure it has been completely exited)
-Copy the folder named `MFitzpatrick.TagSource.Azure7PacePlugin` to the plugin folder opened in the previous step.
+Download Install.exe and run as administrator. This will extact the plugin to the correct plugins directory for Manic Time.
+ `{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin`
 
 Restart ManicTime.
 
