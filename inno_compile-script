@@ -21,7 +21,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=C:\Users\{USERNAME}\Downloads\Azure-Manic-7Pace-master
+OutputDir=C:\Compiled\Azure-Manic-7Pace-master
 OutputBaseFilename=Install
 SetupIconFile=C:\Windows\ACU.ico
 Compression=lzma
@@ -31,7 +31,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Compile\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginIcon.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Compile\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginSpec.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Compile\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\*"; DestDir: "{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin\lib"; Flags: ignoreversion
+Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginIcon.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\PluginSpec.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Uncompiled\Azure-Manic-7Pace-master\MFitzpatrick.TagSource.Azure7PacePlugin\Lib\*"; DestDir: "{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin\lib"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
