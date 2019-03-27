@@ -30,5 +30,7 @@ namespace TagPlugin.Settings
         public string PersonalAccessToken { get; set; }
 
         public string TimeTrackerApiSecret { get; set; }
+
+        public string Days { get; set; } = "7";
     }
 }
