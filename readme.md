@@ -15,12 +15,15 @@ It achieves this in 2 ways:
 
 ### Installation
 
-Download Install.exe and run as administrator. This will extact the plugin to the correct plugins directory for Manic Time.
- `{localappdata}\Finkit\ManicTime\Plugins\MFitzpatrick.TagSource.Azure7PacePlugin`
+Download Install.exe and run as administrator. This will extract the plugin to the correct plugins directory for Manic Time.
+
+Example:
+
+        C:\Users\%username%\AppData\Local\Finkit\ManicTime\Plugins\Packages\MFitzpatrick.TagSource.Azure7PacePlugin`
 
 Restart ManicTime.
 
-*If you wish to compile the installer yourself please see the Wiki Entry*
+If you wish to compile the installer yourself please see the [Wiki](example.com) Entry
 
 ### Configuration
 
