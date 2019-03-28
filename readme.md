@@ -15,7 +15,8 @@ It achieves this in 2 ways:
 
 ### Installation
 
-Download Install.exe and run as administrator. This will extract the plugin to the correct plugins directory for Manic Time.
+Download [Install.exe](https://github.com/mikefitz888/Azure-Manic-7Pace/raw/master/Installer/Install.exe)
+and run as administrator. This will extract the plugin to the correct plugins directory for Manic Time.
 
 Example:
 
