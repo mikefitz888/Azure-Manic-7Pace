@@ -4,7 +4,7 @@
 #define MyAppURL "https://github.com/mikefitz888/Azure-Manic-7Pace"
 
 [Setup]
-AppId={{447729A4-3AA8-4B49-B6DB-047D48668268}
+AppId={{021CA80F-E00A-4D59-8214-0D6B295D5BD8}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
