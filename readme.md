@@ -24,7 +24,7 @@ Example:
 
 Restart ManicTime.
 
-If you wish to compile the installer yourself please see the [Wiki](example.com) Entry
+If you wish to compile the installer yourself please see the [Installer Readme](https://github.com/mikefitz888/Azure-Manic-7Pace/blob/master/Installer/readme.md).
 
 ### Configuration
 
